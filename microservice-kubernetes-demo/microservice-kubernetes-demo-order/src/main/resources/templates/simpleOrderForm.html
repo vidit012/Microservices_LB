@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Simple Order : Add</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Simple Order : Add</h1>
+	<div layout:fragment="content" class="container">
+		<form action="." method="post" role="form">
+			<div class="form-group">
+				<label for="customerId">Customer</label> 
+				<select name="customerId" id="customerId" class="form-control" required>
+					<option value="">-- Select Customer --</option>
+					<option th:each="customer : ${customers}"
+						th:text="${customer.firstname}+' '+${customer.name}"
+						th:value="${customer.customerId}">Rod Johnson</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="itemId">Item</label>
+				<select name="itemId" id="itemId" class="form-control" required>
+					<option value="">-- Select Item --</option>
+					<option th:each="item : ${items}" 
+						th:text="${item.name}+' - $'+${item.price}"
+						th:value="${item.itemId}">MacBook - $1000</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="quantity">Quantity</label>
+				<input type="number" name="quantity" id="quantity" 
+					class="form-control" value="1" min="1" required />
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<button type="submit" class="btn btn-primary">Place Order</button>
+					<a href="/simple/" class="btn btn-default">Cancel</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

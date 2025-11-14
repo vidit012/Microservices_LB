@@ -1,0 +1,53 @@
+# This file creates both the Deployment and the Service for your static frontend page.
+
+# --- 1. The Deployment ---
+# This runs a simple Nginx pod to serve your index.html file.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    # This selector must match the pod labels below.
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      # These are the labels applied to the pods.
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        # This mount puts your index.html into the Nginx web root directory.
+        - name: html-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      # This volume gets its data from the ConfigMap.
+      - name: html-volume
+        configMap:
+          name: frontend-html
+
+---
+
+# --- 2. The Service ---
+# This creates the stable network name "frontend-service".
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    # This selector MUST EXACTLY MATCH the pod labels from the Deployment.
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+

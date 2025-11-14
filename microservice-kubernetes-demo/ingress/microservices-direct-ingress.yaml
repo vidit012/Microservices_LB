@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-direct-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  tls:
+  - hosts:
+    - microservices.local
+    secretName: microservice-tls
+  ingressClassName: nginx
+  rules:
+  - host: microservices.local
+    http:
+      paths:
+      - path: /customer(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: customer
+            port:
+              number: 8080
+      
+      # Route /catalog/* directly to catalog service (strip /catalog prefix)
+      - path: /catalog(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: catalog
+            port:
+              number: 8080
+      
+      # Route /order/* directly to order service (strip /order prefix)
+      - path: /order(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: order
+            port:
+              number: 8080
+      
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-loadbalancer-service
+            port:
+              number: 80

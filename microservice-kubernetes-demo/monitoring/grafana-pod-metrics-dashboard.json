@@ -1,0 +1,236 @@
+{
+  "dashboard": {
+    "title": "Pod Resource Usage",
+    "tags": ["kubernetes", "pods", "resources"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Pod CPU Usage (millicores)",
+        "type": "table",
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{id=~\"/kubepods.*/.*\"}[5m])) by (id) * 1000",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{id}}"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "renameByName": {
+                "id": "Pod Container",
+                "Value": "CPU (millicores)"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Pod Memory Usage (MB)",
+        "type": "table",
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(container_memory_usage_bytes{id=~\"/kubepods.*/.*\"}) by (id) / 1024 / 1024",
+            "format": "table",
+            "instant": true,
+            "legendFormat": "{{id}}"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "renameByName": {
+                "id": "Pod Container",
+                "Value": "Memory (MB)"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Catalog Service - CPU",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 8, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(rate(process_cpu_seconds_total{job=\"catalog\"}[1m])) * 100",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 50, "color": "yellow"},
+                {"value": 75, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Customer Service - CPU",
+        "type": "stat",
+        "gridPos": {"x": 8, "y": 8, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(rate(process_cpu_seconds_total{job=\"customer\"}[1m])) * 100",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 50, "color": "yellow"},
+                {"value": 75, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Order Service - CPU",
+        "type": "stat",
+        "gridPos": {"x": 16, "y": 8, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(rate(process_cpu_seconds_total{job=\"order\"}[1m])) * 100",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 50, "color": "yellow"},
+                {"value": 75, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Catalog Service - Memory",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 12, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=\"catalog\",area=\"heap\"} / 1024 / 1024",
+            "legendFormat": "Heap MB"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decmbytes",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 700, "color": "yellow"},
+                {"value": 900, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Customer Service - Memory",
+        "type": "stat",
+        "gridPos": {"x": 8, "y": 12, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=\"customer\",area=\"heap\"} / 1024 / 1024",
+            "legendFormat": "Heap MB"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decmbytes",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 500, "color": "yellow"},
+                {"value": 700, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Order Service - Memory",
+        "type": "stat",
+        "gridPos": {"x": 16, "y": 12, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=\"order\",area=\"heap\"} / 1024 / 1024",
+            "legendFormat": "Heap MB"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "decmbytes",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 500, "color": "yellow"},
+                {"value": 700, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "All Pods - JVM Memory Over Time",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"} / 1024 / 1024",
+            "legendFormat": "{{job}} - Heap MB"
+          },
+          {
+            "expr": "jvm_memory_used_bytes{area=\"nonheap\"} / 1024 / 1024",
+            "legendFormat": "{{job}} - Non-Heap MB"
+          }
+        ]
+      }
+    ],
+    "refresh": "5s",
+    "time": {
+      "from": "now-15m",
+      "to": "now"
+    }
+  }
+}

@@ -1,0 +1,94 @@
+---
+# Deployment for Custom C++ Load Balancer
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpp-loadbalancer
+  labels:
+    app: cpp-loadbalancer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpp-loadbalancer
+  template:
+    metadata:
+      labels:
+        app: cpp-loadbalancer
+    spec:
+      containers:
+      - name: loadbalancer
+        image: vidit12/cpp-loadbalancer:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: stats
+          containerPort: 8081
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+---
+# Service for Custom C++ Load Balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpp-loadbalancer-service
+  labels:
+    app: cpp-loadbalancer
+spec:
+  type: ClusterIP
+  selector:
+    app: cpp-loadbalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: stats
+    port: 8081
+    targetPort: 8081
+    protocol: TCP
+
+---
+# Service for Stats/Monitoring (optional - for external access)
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpp-loadbalancer-stats
+  labels:
+    app: cpp-loadbalancer
+    component: stats
+spec:
+  type: NodePort
+  selector:
+    app: cpp-loadbalancer
+  ports:
+  - name: stats
+    port: 8081
+    targetPort: 8081
+    protocol: TCP
+    nodePort: 30081

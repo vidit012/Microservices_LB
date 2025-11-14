@@ -1,0 +1,62 @@
+========================================
+  Performance Benchmark Summary
+========================================
+
+Date: Mon Oct 13 11:07:16 AM IST 2025
+Base URL: https://microservices.local:8443
+
+--- catalog ---
+Requests per second:    86.80 [#/sec] (mean)
+Time per request:       576.028 [ms] (mean)
+Failed requests:        0
+  50%    453
+  95%   1499
+  99%   2298
+
+--- customer ---
+Requests per second:    70.82 [#/sec] (mean)
+Time per request:       706.009 [ms] (mean)
+Failed requests:        0
+  50%    456
+  95%   2102
+  99%   3750
+
+--- order ---
+Requests per second:    15.52 [#/sec] (mean)
+Time per request:       3220.814 [ms] (mean)
+Failed requests:        0
+  50%   2493
+  95%   7996
+  99%  10602
+
+--- catalog_high_concurrency ---
+Requests per second:    290.99 [#/sec] (mean)
+Time per request:       343.660 [ms] (mean)
+Failed requests:        0
+  50%    253
+  95%    901
+  99%   1594
+
+
+Current Pod Status:
+NAME                                                 READY   STATUS    RESTARTS        AGE     IP             NODE       NOMINATED NODE   READINESS GATES
+catalog-6c86f84775-qqk9r                             1/1     Running   2 (56s ago)     2d17h   10.244.0.142   minikube   <none>           <none>
+customer-868d6b7686-s4phd                            1/1     Running   2 (2d16h ago)   2d19h   10.244.0.141   minikube   <none>           <none>
+grafana-7f9ddf58d7-v9qsf                             1/1     Running   3 (2d16h ago)   4d      10.244.0.139   minikube   <none>           <none>
+minio-5c5d87cbb5-mhsk8                               1/1     Running   2 (2d16h ago)   2d23h   10.244.0.152   minikube   <none>           <none>
+mongodb-6bb86df75c-klj2b                             1/1     Running   2 (2d16h ago)   3d      10.244.0.149   minikube   <none>           <none>
+nginx-loadbalancer-b6fc99f95-pktxf                   1/1     Running   6 (81m ago)     3d      10.244.0.138   minikube   <none>           <none>
+nginx-prometheus-exporter-f56dbb8d5-kkcs7            1/1     Running   0               18m     10.244.0.153   minikube   <none>           <none>
+order-54f6d76fff-rjf97                               1/1     Running   2 (7s ago)      2d18h   10.244.0.140   minikube   <none>           <none>
+postgres-7c7df8bd47-8w5gg                            1/1     Running   3 (2d16h ago)   3d22h   10.244.0.151   minikube   <none>           <none>
+prometheus-alertmanager-0                            1/1     Running   3 (2d16h ago)   4d      10.244.0.143   minikube   <none>           <none>
+prometheus-kube-state-metrics-5f64969966-7rznx       1/1     Running   10 (81m ago)    4d      10.244.0.150   minikube   <none>           <none>
+prometheus-prometheus-node-exporter-r4k79            1/1     Running   3 (2d16h ago)   4d      192.168.49.2   minikube   <none>           <none>
+prometheus-prometheus-pushgateway-65bc997fdf-d4lb7   1/1     Running   4 (2d16h ago)   4d      10.244.0.144   minikube   <none>           <none>
+prometheus-server-65888dcd6-9kxll                    2/2     Running   7 (2d16h ago)   4d      10.244.0.148   minikube   <none>           <none>
+
+HPA Status:
+NAME           REFERENCE             TARGETS                           MINPODS   MAXPODS   REPLICAS   AGE
+catalog-hpa    Deployment/catalog    cpu: 250%/70%, memory: 94%/80%    1         1         1          4d23h
+customer-hpa   Deployment/customer   cpu: 137%/70%, memory: 148%/80%   1         1         1          4d23h
+order-hpa      Deployment/order      cpu: 249%/70%, memory: 199%/80%   1         1         1          4d23h

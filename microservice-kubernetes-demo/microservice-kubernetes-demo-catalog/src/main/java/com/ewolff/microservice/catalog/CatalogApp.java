@@ -1,0 +1,38 @@
+package com.ewolff.microservice.catalog;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
+@ComponentScan
+@EnableAutoConfiguration
+@Component
+public class CatalogApp {
+
+	private final ItemRepository itemRepository;
+
+	@Autowired
+	public CatalogApp(ItemRepository itemRepository) {
+		this.itemRepository = itemRepository;
+	}
+
+	@PostConstruct
+	public void generateTestData() {
+		// Only generate test data if the database is empty
+		if (itemRepository.count() == 0) {
+			itemRepository.save(new Item("iPod", 42.0));
+			itemRepository.save(new Item("iPod touch", 21.0));
+			itemRepository.save(new Item("iPod nano", 1.0));
+			itemRepository.save(new Item("Apple TV", 100.0));
+		}
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(CatalogApp.class, args);
+	}
+
+}

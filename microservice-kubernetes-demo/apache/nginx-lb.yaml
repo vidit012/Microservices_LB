@@ -1,0 +1,68 @@
+# This is the corrected, simplified version of your Nginx deployment.
+# It removes the health probes to resolve the 503 error.
+# The apiVersion for the Deployment has been fixed from apps/1 to apps/v1.
+
+apiVersion: apps/v1 # <-- CORRECTED
+kind: Deployment
+metadata:
+  name: nginx-loadbalancer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-lb
+  template:
+    metadata:
+      labels:
+        app: nginx-lb
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 8081
+          name: metrics
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-html-volume
+          mountPath: /usr/share/nginx/html
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-main-config
+      - name: nginx-html-volume
+        configMap:
+          name: nginx-index-html-config
+
+--- # <-- THIS SEPARATOR IS CRITICAL. IT MUST BE ON ITS OWN LINE.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer-service
+spec:
+  selector:
+    app: nginx-lb
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      name: metrics
+  type: NodePort
+
+  

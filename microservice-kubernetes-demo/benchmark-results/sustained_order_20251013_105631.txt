@@ -1,0 +1,59 @@
+This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking microservices.local (be patient)
+Completed 3000 requests
+Completed 6000 requests
+Completed 9000 requests
+Completed 12000 requests
+Completed 15000 requests
+Completed 18000 requests
+Completed 21000 requests
+Completed 24000 requests
+Completed 27000 requests
+Completed 30000 requests
+Finished 30000 requests
+
+
+Server Software:        
+Server Hostname:        microservices.local
+Server Port:            8443
+SSL/TLS Protocol:       TLSv1.3,TLS_AES_256_GCM_SHA384,2048,256
+Server Temp Key:        X25519 253 bits
+TLS Server Name:        microservices.local
+
+Document Path:          /order/
+Document Length:        1437 bytes
+
+Concurrency Level:      20
+Time taken for tests:   160.595 seconds
+Complete requests:      30000
+Failed requests:        27806
+   (Connect: 0, Receive: 0, Length: 27806, Exceptions: 0)
+Non-2xx responses:      27806
+Keep-Alive requests:    26478
+Total transferred:      11471082 bytes
+HTML transferred:       7462076 bytes
+Requests per second:    186.81 [#/sec] (mean)
+Time per request:       107.063 [ms] (mean)
+Time per request:       5.353 [ms] (mean, across all concurrent requests)
+Transfer rate:          69.75 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    4  17.1      0     711
+Processing:     1  103 332.1      2    6847
+Waiting:        1  102 329.2      2    6847
+Total:          1  107 342.2      2    6900
+
+Percentage of the requests served within a certain time (ms)
+  50%      2
+  66%      3
+  75%      3
+  80%      4
+  90%    496
+  95%    897
+  98%   1162
+  99%   1337
+ 100%   6900 (longest request)

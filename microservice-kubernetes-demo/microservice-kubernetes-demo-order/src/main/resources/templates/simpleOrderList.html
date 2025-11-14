@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Simple Order : View all</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Simple Order : View all</h1>
+	<div layout:fragment="content" class="container">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Order ID</th>
+					<th>Customer Name</th>
+					<th>Item Ordered</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${orders == null or #lists.isEmpty(orders)}">
+					<td colspan="6" class="text-center">No orders</td>
+				</tr>
+				<tr th:each="order : ${orders}">
+					<td><a th:href="''+${order.orderId}" 
+						th:text="${order.orderId}">1</a></td>
+					<td th:text="${order.customerName}">John Doe</td>
+					<td th:text="${order.itemOrdered}">MacBook</td>
+					<td th:text="${order.quantity}">2</td>
+					<td th:text="'$'+${#numbers.formatDecimal(order.price, 0, 2)}">$2000.00</td>
+					<td>
+						<form th:action="''+${order.orderId}" method="post" style="display:inline;">
+							<input type="hidden" name="_method" value="delete" />
+							<input type="submit" value="Delete" class="btn btn-danger btn-sm" />
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-4">
+				<a href="form.html" class="btn btn-primary">Add New Order</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

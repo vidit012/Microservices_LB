@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservice-tls-ingress
+  annotations:
+    # This annotation is crucial for correct path rewriting.
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # This ensures all traffic is forced to use HTTPS.
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - microservices.local
+    # This must match the name of the Secret you created for your certificate.
+    secretName: microservice-tls
+  ingressClassName: nginx
+  rules:
+  - host: microservices.local
+    http:
+      paths:
+      # --- SPECIFIC ROUTES FIRST ---
+      # Rule for the Customer microservice
+      - path: /customer(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-loadbalancer-service
+            port:
+              number: 80
+      # Rule for the Catalog microservice
+      - path: /catalog(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-loadbalancer-service
+            port:
+              number: 80
+      # Rule for the Order microservice
+      - path: /order(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-loadbalancer-service
+            port:
+              number: 80
+      
+      # --- DEFAULT CATCH-ALL RULE LAST ---
+      # This rule sends all other traffic to your static index.html page.
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-loadbalancer-service
+            port:
+              number: 80
+

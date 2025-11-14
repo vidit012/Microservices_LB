@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Simple Order : Details</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Simple Order : Details</h1>
+	<div layout:fragment="content" class="container">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Order #<span th:text="${order.orderId}">1</span></h3>
+			</div>
+			<div class="panel-body">
+				<table class="table table-bordered">
+					<tr>
+						<th>Order ID</th>
+						<td th:text="${order.orderId}">1</td>
+					</tr>
+					<tr>
+						<th>Customer Name</th>
+						<td th:text="${order.customerName}">John Doe</td>
+					</tr>
+					<tr>
+						<th>Item Ordered</th>
+						<td th:text="${order.itemOrdered}">MacBook</td>
+					</tr>
+					<tr>
+						<th>Quantity</th>
+						<td th:text="${order.quantity}">2</td>
+					</tr>
+					<tr>
+						<th>Total Price</th>
+						<td th:text="'$'+${#numbers.formatDecimal(order.price, 0, 2)}">$2000.00</td>
+					</tr>
+				</table>
+				<div class="row">
+					<div class="col-md-12">
+						<a href="/simple/" class="btn btn-default">Back to Orders</a>
+						<form th:action="'/simple/'+${order.orderId}" th:method="delete" style="display:inline;">
+							<input type="submit" value="Delete Order" class="btn btn-danger" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

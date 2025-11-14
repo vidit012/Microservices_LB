@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<title>Item : Edit</title>
+</head>
+<body>
+	<h1 layout:fragment="header">Item : Edit</h1>
+	<div layout:fragment="content" class="container">
+		<form th:action="${item.id!=0} ? ${item.id}+'.html' : 'form.html' " th:object="${item}"
+			th:method="${item.id != 0} ? put : post" role="form">
+			<div class="form-group">
+				<label >Name</label> <input type="text"
+					th:field="*{name}" class="form-control" placeholder="name" />
+			</div>
+
+			<div class="form-group">
+				<label >Price</label> <input type="text"
+					th:field="*{price}" class="form-control"
+					placeholder="price" />
+			</div>
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>
+		
+		<!-- MinIO Image Upload Section -->
+		<div th:if="${item.id != 0}" style="margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px;">
+			<h3>Product Image (MinIO Storage)</h3>
+			
+			<!-- Display existing image -->
+			<div class="form-group">
+				<label>Current Image:</label><br/>
+				<div style="min-height: 220px; background: #f5f5f5; padding: 10px; border-radius: 4px; display: inline-block; text-align: center;">
+					<img th:src="@{'/catalog/items/' + ${item.id} + '/image'}"
+					     alt="Product Image" 
+					     style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px; object-fit: contain; background: white;" 
+					     onerror="this.alt='No Image Uploaded - Use form below'; this.style.display='inline-block'; this.style.padding='80px 20px'; this.style.backgroundColor='#eee';" />
+				</div>
+			</div>
+			
+			<!-- Upload new image form -->
+			<form th:action="@{'/catalog/items/' + ${item.id} + '/image'}" 
+			      method="post" 
+			      enctype="multipart/form-data"
+			      style="margin-top: 15px;">
+				<div class="form-group">
+					<label for="imageFile">Upload New Image:</label>
+					<input type="file" 
+					       id="imageFile" 
+					       name="file" 
+					       accept="image/*" 
+					       class="form-control" 
+					       required />
+					<small class="form-text text-muted">
+						Supported formats: JPG, PNG, GIF. Max size: 5MB
+					</small>
+				</div>
+				<button type="submit" class="btn btn-primary">
+					<span class="glyphicon glyphicon-cloud-upload"></span> Upload to MinIO
+				</button>
+			</form>
+			
+			<div style="margin-top: 15px;">
+				<small class="text-muted">
+					<strong>Note:</strong> Images are stored in MinIO distributed object storage (S3-compatible)
+				</small>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

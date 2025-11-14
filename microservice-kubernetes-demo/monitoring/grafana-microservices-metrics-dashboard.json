@@ -1,0 +1,194 @@
+{
+  "dashboard": {
+    "title": "Microservices Performance Dashboard",
+    "tags": ["microservices", "spring-boot", "kubernetes"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Service Request Rate (req/s)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"catalog\"}[1m])",
+            "legendFormat": "Catalog - {{uri}}"
+          },
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"customer\"}[1m])",
+            "legendFormat": "Customer - {{uri}}"
+          },
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"order\"}[1m])",
+            "legendFormat": "Order - {{uri}}"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Service Response Time (p95)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{job=\"catalog\"}[5m]))",
+            "legendFormat": "Catalog p95"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{job=\"customer\"}[5m]))",
+            "legendFormat": "Customer p95"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{job=\"order\"}[5m]))",
+            "legendFormat": "Order p95"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "HTTP Status Codes",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{status=~\"2..\"}[1m])",
+            "legendFormat": "2xx - {{job}}"
+          },
+          {
+            "expr": "rate(http_server_requests_seconds_count{status=~\"4..\"}[1m])",
+            "legendFormat": "4xx - {{job}}"
+          },
+          {
+            "expr": "rate(http_server_requests_seconds_count{status=~\"5..\"}[1m])",
+            "legendFormat": "5xx - {{job}}"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\",job=\"catalog\"} / jvm_memory_max_bytes{area=\"heap\",job=\"catalog\"} * 100",
+            "legendFormat": "Catalog Heap %"
+          },
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\",job=\"customer\"} / jvm_memory_max_bytes{area=\"heap\",job=\"customer\"} * 100",
+            "legendFormat": "Customer Heap %"
+          },
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\",job=\"order\"} / jvm_memory_max_bytes{area=\"heap\",job=\"order\"} * 100",
+            "legendFormat": "Order Heap %"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Active Threads",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 16, "w": 8, "h": 6},
+        "targets": [
+          {
+            "expr": "jvm_threads_live_threads",
+            "legendFormat": "{{job}}"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "GC Pause Time",
+        "type": "graph",
+        "gridPos": {"x": 8, "y": 16, "w": 8, "h": 6},
+        "targets": [
+          {
+            "expr": "rate(jvm_gc_pause_seconds_sum[1m])",
+            "legendFormat": "{{job}} - {{action}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Database Connections",
+        "type": "graph",
+        "gridPos": {"x": 16, "y": 16, "w": 8, "h": 6},
+        "targets": [
+          {
+            "expr": "hikaricp_connections_active",
+            "legendFormat": "{{job}} - Active"
+          },
+          {
+            "expr": "hikaricp_connections_idle",
+            "legendFormat": "{{job}} - Idle"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Nginx Load Balancer - Requests/sec",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 22, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "rate(nginx_http_requests_total[1m])",
+            "legendFormat": "Requests/sec"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Nginx - Active Connections",
+        "type": "stat",
+        "gridPos": {"x": 6, "y": 22, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "nginx_connections_active",
+            "legendFormat": "Active"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Pod CPU Usage",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 22, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{pod=~\"catalog.*|customer.*|order.*\"}[1m]) * 100",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Pod Memory Usage",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 30, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{pod=~\"catalog.*|customer.*|order.*\"} / 1024 / 1024",
+            "legendFormat": "{{pod}} MB"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "HPA Replica Count",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 30, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "kube_horizontalpodautoscaler_status_current_replicas",
+            "legendFormat": "{{horizontalpodautoscaler}}"
+          }
+        ]
+      }
+    ],
+    "refresh": "5s",
+    "time": {
+      "from": "now-15m",
+      "to": "now"
+    }
+  }
+}

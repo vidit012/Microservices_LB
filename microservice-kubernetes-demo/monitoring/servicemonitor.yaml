@@ -1,0 +1,67 @@
+---
+# ServiceMonitor for Catalog Service
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: catalog-metrics
+  labels:
+    app: catalog
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      run: catalog
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 15s
+---
+# ServiceMonitor for Customer Service
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: customer-metrics
+  labels:
+    app: customer
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      run: customer
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 15s
+---
+# ServiceMonitor for Order Service
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: order-metrics
+  labels:
+    app: order
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      run: order
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 15s
+---
+# ServiceMonitor for Nginx Exporter
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-exporter-metrics
+  labels:
+    app: nginx-prometheus-exporter
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: nginx-prometheus-exporter
+  endpoints:
+  - port: metrics
+    interval: 15s
